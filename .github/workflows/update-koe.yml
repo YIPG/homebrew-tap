@@ -1,0 +1,72 @@
+name: Update koe cask
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Published notarized release version, without v"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-koe-cask
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Download the published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Invalid release version." >&2
+            exit 1
+          fi
+          mkdir -p .release
+          gh release view "v$VERSION" --repo YIPG/koe \
+            --json isDraft,isPrerelease,tagName > .release/release.json
+          gh release download "v$VERSION" --repo YIPG/koe --dir .release \
+            --pattern "koe-$VERSION-macos-arm64.zip" --pattern SHA256SUMS --pattern koe.rb
+      - name: Verify identity, checksum, signature and notarization
+        run: |
+          set -euo pipefail
+          python3 scripts/verify-release.py "$VERSION" .release
+          ditto -x -k ".release/koe-$VERSION-macos-arm64.zip" .release/extracted
+          APP=.release/extracted/koe.app
+          codesign --verify --strict "$APP"
+          xcrun stapler validate "$APP"
+          spctl --assess --type execute --verbose=2 "$APP"
+          "$APP/Contents/MacOS/koe" --verify-bundle
+          ruby -c .release/koe.rb
+      - name: Publish the verified cask
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p Casks
+          cp .release/koe.rb Casks/koe.rb
+          git add Casks/koe.rb
+          if git diff --cached --quiet; then
+            echo "The tap already contains this exact cask."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update koe to $VERSION" \
+            -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin HEAD:main
