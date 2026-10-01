@@ -25,7 +25,7 @@ Stop dictation and quit koe before upgrading. Removing the app does not erase
 your API keys or preferences; remove credentials separately in Keychain Access
 if desired.
 
-- [Website and setup](https://koe.yuyakevinito.com/)
+- [Website and setup](https://saykoe.com/)
 - [Public binary releases](https://github.com/YIPG/koe-releases)
 
 ## Maintainer: publish a verified cask

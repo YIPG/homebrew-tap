@@ -41,7 +41,7 @@ class ReleaseTests(unittest.TestCase):
   url "https://github.com/YIPG/koe-releases/releases/download/v#{{version}}/koe-#{{version}}-macos-arm64.zip"
   name "koe"
   desc "Account-based menu bar dictation"
-  homepage "https://koe.yuyakevinito.com/"
+  homepage "https://saykoe.com/"
 
   depends_on arch: :arm64
   depends_on macos: ">= :ventura"
