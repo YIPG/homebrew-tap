@@ -38,9 +38,9 @@ class ReleaseTests(unittest.TestCase):
   version "0.2.0"
   sha256 "{digest}"
 
-  url "https://github.com/YIPG/koe/releases/download/v#{{version}}/koe-#{{version}}-macos-arm64.zip"
+  url "https://github.com/YIPG/koe-releases/releases/download/v#{{version}}/koe-#{{version}}-macos-arm64.zip"
   name "koe"
-  desc "Menu bar dictation using your own transcription API"
+  desc "Account-based menu bar dictation"
   homepage "https://koe.yuyakevinito.com/"
 
   depends_on arch: :arm64

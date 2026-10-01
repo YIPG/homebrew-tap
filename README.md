@@ -1,7 +1,8 @@
 # Yuya's Homebrew tap
 
 Public casks for applications by [Yuya Ito](https://yuyakevinito.com/).
-The koe app source is public; its website source is maintained separately.
+Application, service and website source are private. This repository contains
+only public Homebrew installation metadata, not application source.
 
 ## koe
 
@@ -14,8 +15,9 @@ After a notarized release is published and `Casks/koe.rb` is added, install with
 brew install --cask yipg/tap/koe
 ```
 
-koe requires an Apple Silicon Mac running macOS 13 or later. Users provide their
-own transcription API credentials; no developer API key or credits are bundled.
+koe requires an Apple Silicon Mac running macOS 13 or later and a koe account.
+The first ten minutes are free, without a card, once account access is available.
+After that, a paid plan is optional. No provider API key is needed or bundled.
 Homebrew may ask you to trust this third-party cask. No installation step
 disables Gatekeeper or removes quarantine.
 
@@ -24,11 +26,11 @@ your API keys or preferences; remove credentials separately in Keychain Access
 if desired.
 
 - [Website and setup](https://koe.yuyakevinito.com/)
-- [Application source and releases](https://github.com/YIPG/koe)
+- [Public binary releases](https://github.com/YIPG/koe-releases)
 
 ## Maintainer: publish a verified cask
 
-After `YIPG/koe` publishes a real notarized release:
+After `YIPG/koe-releases` publishes a real notarized release:
 
 ```sh
 gh workflow run update-koe.yml --repo YIPG/homebrew-tap -f version=0.2.0

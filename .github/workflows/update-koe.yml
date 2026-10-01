@@ -38,9 +38,9 @@ jobs:
             exit 1
           fi
           mkdir -p .release
-          gh release view "v$VERSION" --repo YIPG/koe \
+          gh release view "v$VERSION" --repo YIPG/koe-releases \
             --json isDraft,isPrerelease,tagName > .release/release.json
-          gh release download "v$VERSION" --repo YIPG/koe --dir .release \
+          gh release download "v$VERSION" --repo YIPG/koe-releases --dir .release \
             --pattern "koe-$VERSION-macos-arm64.zip" --pattern SHA256SUMS --pattern koe.rb
       - name: Verify identity, checksum, signature and notarization
         run: |
